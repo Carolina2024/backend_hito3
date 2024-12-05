@@ -20,6 +20,23 @@ const UsuariosProvider = ({ children }) => {
   const [publicaciones, setPublicaciones] = useState([]); //para todas las publicaciones
   const [MisPublicaciones, setMisPublicaciones] = useState([]);
   const [MisFavoritos, setMisFavoritos] = useState([]);
+  const [sortOption, setSortOption] = useState(""); // Opción de ordenación seleccionada
+
+  // Función para obtener publicaciones con orden
+  const fetchPublicaciones = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/publicaciones/ordenar", {
+        params: { sort: sortOption }, // Pasar la opción de orden como parámetro
+      });
+      setPublicaciones(response.data);
+    } catch (error) {
+      console.error("Error al obtener publicaciones:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPublicaciones(); // Llamar la API cada vez que cambie la opción de orden
+  }, [sortOption]);
 
   const logout = () => {
     setUsuario(null);
@@ -86,7 +103,7 @@ const UsuariosProvider = ({ children }) => {
         setActiveMenu: handleMenuChange,
         showCerrarSesion,
         setShowCerrarSesion,
-       /*  crearPublicacion, */
+        /*  crearPublicacion, */
         MisPublicaciones,
         setMisPublicaciones,
         publicaciones,
@@ -94,6 +111,7 @@ const UsuariosProvider = ({ children }) => {
         MisFavoritos,
         setMisFavoritos,
         logout,
+        setSortOption,
       }}
     >
       {children}

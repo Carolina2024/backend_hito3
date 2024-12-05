@@ -84,7 +84,7 @@ const Tienda = () => {
               {publicaciones.map((publicacion) => (
                 <Col xs={12} md={6} lg={6} key={publicacion.publicacion_id}>
                   <CardPublicacion
-                    publicacion_id={publicacion.publicacion_id}
+                    publicacion_id={publicacion.publicacion_id} //se pasa publicacion_id
                     imagen={publicacion.imagen_url}
                     titulo={publicacion.titulo}
                     descripcion={publicacion.descripcion}

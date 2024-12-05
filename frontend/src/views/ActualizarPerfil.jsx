@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const ActualizarPerfil = () => {
-  const { usuario,setUsuario } = useContext(UsuarioContext);
+  const { usuario, setUsuario } = useContext(UsuarioContext);
   const { setActiveMenu } = useContext(UsuarioContext);
   const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
@@ -17,9 +17,16 @@ const ActualizarPerfil = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Validar que las contraseñas coincidan
+
+    // Validar que las contraseñas nuevas coincidan
     if (nuevoPassword !== confirmar) {
-      alert("Las contraseñas no coinciden");
+      alert("Las contraseñas nuevas no coinciden");
+      return;
+    }
+
+    // Validar que se haya ingresado la contraseña actual
+    if (!password) {
+      alert("Debes ingresar tu contraseña actual para realizar cambios");
       return;
     }
 
@@ -29,17 +36,11 @@ const ActualizarPerfil = () => {
       return;
     }
 
-    setNombre("");
-    setEmail("");
-    setPassword("");
-    setNuevoPassword("");
-    setConfirmar("");
-
     // Prepara el objeto de datos solo con los campos que tienen valores
     const updatedUserData = {
-      nombre: nombre || usuario.nombre, // Si no se cambia el nombre, mantener el actual
-      email: email || usuario.email, // Si no se cambia el email, mantener el actual
-      password: password || usuario.password, // Si no se cambia la contraseña, mantener la actual
+      nombre: nombre || usuario.nombre, // Mantener el nombre actual si no se cambia
+      email: email || usuario.email, // Mantener el email actual si no se cambia
+      password, // Siempre enviar la contraseña actual para validarla en el backend
       nuevoPassword: nuevoPassword || "", // Solo enviar nuevoPassword si se cambió
     };
 
@@ -55,9 +56,12 @@ const ActualizarPerfil = () => {
           withCredentials: true, // Permitir el envío de cookies (si es necesario)
         }
       );
+
       console.log(response);
+
       if (response.status === 200) {
         alert("Perfil actualizado con éxito");
+
         // Actualizar el contexto si los datos del usuario cambiaron
         setUsuario((prevUsuario) => {
           if (prevUsuario.nombre !== nombre || prevUsuario.email !== email) {
@@ -65,11 +69,20 @@ const ActualizarPerfil = () => {
           }
           return prevUsuario; // No actualizar si no hay cambios
         });
-        navigate("/perfil"); // Redirigir a la vista del perfil
+
+        // Redirigir a la vista del perfil
+        navigate("/perfil");
       }
     } catch (error) {
       console.error("Error al actualizar perfil:", error);
       alert("No se pudo actualizar el perfil. Inténtalo de nuevo.");
+    } finally {
+      // Limpiar los campos
+      setNombre("");
+      setEmail("");
+      setPassword("");
+      setNuevoPassword("");
+      setConfirmar("");
     }
   };
 
@@ -80,7 +93,7 @@ const ActualizarPerfil = () => {
   //para cambios en los inputs
   const handleChange = (setter) => (event) => setter(event.target.value);
 
-    /* if (nuevoPassword !== confirmar) {
+  /* if (nuevoPassword !== confirmar) {
       alert("Los password no coinciden");
       return;
     } */
@@ -171,30 +184,6 @@ const ActualizarPerfil = () => {
                     />
                   </Col>
                 </Form.Group>
-                <Form.Group as={Row} controlId="formPlaintextPassword">
-                  <Form.Label
-                    column
-                    sm="12"
-                    className="text-start"
-                    style={{ fontWeight: "600", color: "#4a4a4a" }}
-                  >
-                    Password Actual
-                  </Form.Label>
-                  <Col sm="12">
-                    <Form.Control
-                      type="password"
-                      placeholder="*******"
-                      onChange={handleChange(setPassword)}
-                      value={password}
-                      style={{
-                        borderColor: "#b0c4de",
-                        borderRadius: "8px",
-                        padding: "10px",
-                        boxShadow: "none",
-                      }}
-                    />
-                  </Col>
-                </Form.Group>
                 <Form.Group as={Row} controlId="formPlaintextNewPassword">
                   <Form.Label
                     column
@@ -234,6 +223,30 @@ const ActualizarPerfil = () => {
                       placeholder="*******"
                       onChange={handleChange(setConfirmar)}
                       value={confirmar}
+                      style={{
+                        borderColor: "#b0c4de",
+                        borderRadius: "8px",
+                        padding: "10px",
+                        boxShadow: "none",
+                      }}
+                    />
+                  </Col>
+                </Form.Group>
+                <Form.Group as={Row} controlId="formPlaintextPassword">
+                  <Form.Label
+                    column
+                    sm="12"
+                    className="text-start"
+                    style={{ fontWeight: "600", color: "#4a4a4a" }}
+                  >
+                    Password Actual
+                  </Form.Label>
+                  <Col sm="12">
+                    <Form.Control
+                      type="password"
+                      placeholder="*******"
+                      onChange={handleChange(setPassword)}
+                      value={password}
                       style={{
                         borderColor: "#b0c4de",
                         borderRadius: "8px",

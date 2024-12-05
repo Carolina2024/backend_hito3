@@ -34,8 +34,7 @@ const CardPublicacion = ({ publicacion_id,
   const handleAgregarFavorito = async (publicacion_id) => {
     console.log("publicacion_id: ", publicacion_id);
     // Convertir publicacion_id a número si es un string
-    /* const publicacionIdNumerico = Number(publicacion_id);
-
+   /*  const publicacionIdNumerico = Number(publicacion_id);
     if (!publicacionIdNumerico) {
       alert("ID de publicación no válido.");
       return;
