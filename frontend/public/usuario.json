@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "nombre": "Macarena Osses",
+    "password": "123456",
+    "email": "maka.osses@gmail.com"
+  },
+  {
+    "id": 2,
+    "nombre": "Carolina Castillo",
+    "password": "123",
+    "email": "carcastillos@gmail.com"
+  },
+  {
+    "id": 3,
+    "nombre": "Francisco Morales",
+    "password": "12345678",
+    "email": "programador1@gmail.com"
+  },
+  {
+    "id": 4,
+    "nombre": "Richard Muñoz",
+    "password": "123456789",
+    "email": "programador2@gmail.com"
+  }
+  
+]

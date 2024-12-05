@@ -1,0 +1,69 @@
+#root{
+  background-color: #1d1c1c;
+  color: #E0E0E0;
+}
+
+.home-root h3,
+.home-root h5 {
+  color: #ccbba1;
+}
+
+.home-root .container {
+  border: 1px solid #34495E;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.home-root .iconos {
+  color: #c3f3f3;
+}
+
+.footer {
+  border-top: 2px solid #34495E;
+}
+
+.card {
+  background-color: #191f24 !important;
+  color: #ecf0f1 !important;
+  border: 1px solid #34495e !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+.card .card-img-top {
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+button:focus {
+  outline: none;
+}
+
+.registroUsuario {
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  padding: 2%;
+  text-align: center;
+  align-items: center;
+}
+
+.formulario {
+  text-align: end;
+  width: 50%;
+  margin-left: 30%;
+}
+
+.menu {
+  visibility: hidden;
+}

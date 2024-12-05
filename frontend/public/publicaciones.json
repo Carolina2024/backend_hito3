@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "titulo": "Programación C++",
+    "descripcion": "Curso de programación en C++",
+    "imagen_url": "https://i0.wp.com/imgs.hipertextual.com/wp-content/uploads/2019/05/hipertextual-cursos-online-gratis-aprender-programar-c-2019879376.jpg?fit=1500%2C1000&quality=50&strip=all&ssl=1",
+    "precio": 350000,
+    "usuario_id": 3
+  },
+  {
+    "id": 2,
+    "titulo": "Programacion JavaScript",
+    "descripcion": "Curso de programacion en JavaScript",
+    "imagen_url": "https://blog.interfell.com/hubfs/JavaScript%20un%20lenguaje%20de%20programaci%C3%B3n.jpg",
+    "precio": 390000,
+    "usuario_id": 3
+  },
+  {
+    "id": 3,
+    "titulo": "Programacion Python",
+    "descripcion": "Curso de programacion en Python",
+    "imagen_url": "https://th.bing.com/th/id/OIP.XTRl4rwNqniKlEtc6swCMgHaE8?rs=1&pid=ImgDetMain",
+    "precio": 400000,
+    "usuario_id": 3
+  },
+  {
+    "id": 4,
+    "titulo": "Programacion Java",
+    "descripcion": "Curso de programacion en Java",
+    "imagen_url": "https://cdn.eduonix.com/assets/images/header_img/2020092815324112334.jpg",
+    "precio": 420000,
+    "usuario_id": 3
+  },
+  {
+    "id": 5,
+    "titulo": "Programacion C#",
+    "descripcion": "Curso de programacion en C#",
+    "imagen_url": "https://www.iamtimcorey.com/assets/images/courses/mc-csh-01_title.png",
+    "precio": 450000,
+    "usuario_id": 3
+  },
+  {
+    "id": 6,
+    "titulo": "Programacion Kotlin",
+    "descripcion": "Curso de programacion en Kotlin",
+    "imagen_url": "https://www.weetechsolution.com/wp-content/uploads/2023/01/what-is-kotlin.jpg",
+    "precio": 500000,
+    "usuario_id": 3
+  }
+]
