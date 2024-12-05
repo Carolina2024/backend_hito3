@@ -7,7 +7,14 @@ const {
   verificarCredenciales,
   getUsuarios,
   crearPublicacion,
-  getPublicaciones,
+  obtenerPublicaciones,
+  obtenerEmailPorNombre,
+  obtenerMisPublicaciones,
+  agregarEliminarFavorito,
+  obtenerMisFavoritos,
+  actualizarPerfil,
+  buscarPublicaciones,
+  ordenarPublicaciones,
   /* obtenerDetallePublicacion, */
 } = require("../controllers/usersControllers"); //para las funciones
 const { authMiddleware } = require("../middlewares/authMiddleware");
@@ -120,21 +127,7 @@ router.post("/publicaciones", authMiddleware, async (req, res) => {
     // Obtener el email del usuario autenticado
     const { email } = req.user;
 
-    // Llamamos a la función getPublicaciones pasando el email
-    const publicaciones = await getPublicaciones(email);
-    res.status(200).json(publicaciones); // Enviar las publicaciones obtenidas
-  } catch (error) {
-    res
-      .status(error.code || 500)
-      .send({ message: error.message || "Error en el servidor" });
-  }
-}); */
-
-//ruta para mostrar las publicaciones
-router.get("/publicaciones", async (req, res) => {
-  try {
-    // Llamamos a la función getPublicaciones sin necesidad de autenticación
-    const publicaciones = await getPublicaciones();
+    const publicaciones = await obtenerPublicaciones(email);
     res.status(200).json(publicaciones); // Enviar las publicaciones obtenidas
   } catch (error) {
     res
@@ -142,27 +135,45 @@ router.get("/publicaciones", async (req, res) => {
       .send({ message: error.message || "Error en el servidor" });
   }
 });
+ */
 
-// Ruta para obtener el detalle de una publicación
-/* router.get("/detalle/:idPublicacion",obtenerDetallePublicacion); */
+// Ruta para obtener las publicaciones, debe ser publica
+router.get("/publicaciones", obtenerPublicaciones);
 
-
-// Ruta para eliminar una publicación por su ID
-/* app.delete('/publicaciones/:id', async (req, res) => {
-  const { id } = req.params;
-
+//ruta para mostrar las publicaciones
+/* router.get("/publicaciones", async (req, res) => {
   try {
-    const result = await pool.query('DELETE FROM publicaciones WHERE id = $1 RETURNING *', [id]);
-
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: 'Publicación no encontrada' });
-    }
-
-    res.status(200).json({ message: 'Publicación eliminada exitosamente' });
+    const publicaciones = await getPublicaciones();
+    res.status(200).json(publicaciones);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al eliminar la publicación' });
+    res
+      .status(error.code || 500)
+      .send({ message: error.message || "Error en el servidor" });
   }
 }); */
+
+
+// Ruta para obtener el email del publicador por su nombre
+router.get('/usuarios/email/:nombrePublicador', obtenerEmailPorNombre);
+
+// Ruta para obtener las publicaciones de un usuario autenticado
+router.get('/publicaciones/mis-publicaciones', authMiddleware, obtenerMisPublicaciones);
+
+
+// Ruta para agregar o eliminar un favorito
+router.put('/favoritos/:publicacion_id', authMiddleware, agregarEliminarFavorito);
+
+// Ruta para obtener los favoritos de un usuario
+router.get('/favoritos', authMiddleware, obtenerMisFavoritos);
+
+// Ruta para actualizar el perfil de usuario
+router.put('/perfil', authMiddleware, actualizarPerfil);
+
+// Ruta para buscar publicaciones por título, es publico
+router.get('/publicaciones/buscar', buscarPublicaciones);
+
+//para ordenar publicaciones, es publico
+router.get("/publicaciones/ordenar", ordenarPublicaciones);
+
 
 module.exports = router;

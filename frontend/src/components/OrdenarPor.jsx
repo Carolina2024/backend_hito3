@@ -3,23 +3,25 @@ import { Form } from "react-bootstrap";
 import { UsuarioContext } from "../context/UsuarioContext";
 
 const OrdenarPor = () => {
-  const { setSortOption } = useContext(UsuarioContext);
+  const { setSortOption, fetchPublicaciones } = useContext(UsuarioContext);
 
-  const handleSortChange = (e) => {
-    setSortOption(e.target.value);
+  const handleSortChange = async (e) => {
+    const sort = e.target.value;
+    setSortOption(sort);
+    await fetchPublicaciones(); // Refrescar publicaciones al cambiar el criterio
   };
 
   return (
-    <Form.Select
-      aria-label="Default select example"
+    <select
       onChange={handleSortChange}
+      style={{ width: "100%", height: "35px" }}
     >
-      <option>Ordenar por</option>
+      <option value="">Ordenar por</option>
       <option value="name-asc">Titulo (A-Z)</option>
       <option value="name-desc">Titulo (Z-A)</option>
       <option value="price-asc">Precio (Menor a Mayor)</option>
       <option value="price-desc">Precio (Mayor a Menor)</option>
-    </Form.Select>
+    </select>
   );
 };
 

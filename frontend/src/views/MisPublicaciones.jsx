@@ -9,7 +9,7 @@ const MisPublicaciones = () => {
   const { MisPublicaciones, setMisPublicaciones, setActiveMenu } =
     useContext(UsuarioContext);
   const { usuario } = useContext(UsuarioContext); // Acceder al usuario que incia sesion desde el contexto
-  const token = sessionStorage.getItem("token"); // Obtener el token almacenado en sessionStorage
+  /* const token = sessionStorage.getItem("token"); */ // Obtener el token almacenado en sessionStorage
 
   // Efecto para obtener las publicaciones del usuario autenticado
   useEffect(() => {
@@ -59,7 +59,7 @@ const MisPublicaciones = () => {
         <Col xs={12} md={9}>
           <Container
             style={{
-              maxHeight: "calc(100vh - 220px)", // Ajustar la altura máxima
+              maxHeight: "calc(100vh - 300px)", // Ajustar la altura máxima
               overflowY: "auto", // Habilitar desplazamiento vertical
               overflowX: "hidden", // Evitar desplazamiento horizontal
               padding: "15px",
@@ -82,8 +82,9 @@ const MisPublicaciones = () => {
             >
               {MisPublicaciones.length > 0 ? (
                 MisPublicaciones.map((pub, index) => (
-                  <Col xs={12} md={6} lg={6} key={index}>
+                  <Col xs={12} md={6} lg={6} key={pub.publicacion_id}>
                     <CardPublicacion
+                      publicacion_id={pub.publicacion_id}
                       imagen={pub.imagen_url}
                       titulo={pub.titulo}
                       descripcion={pub.descripcion}

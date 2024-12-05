@@ -98,6 +98,7 @@ const obtenerPublicaciones = async (req, res) => {
     }
     // Retornar solo el nombre del publicador (sin email)
     const publicaciones = rows.map((row) => ({
+      //se renombra el id a publicacion_id para ocupar en frontend
       publicacion_id: row.id,
       titulo: row.titulo,
       descripcion: row.descripcion,
@@ -117,20 +118,17 @@ const obtenerPublicaciones = async (req, res) => {
 const obtenerEmailPorNombre = async (req, res) => {
   try {
     const { nombrePublicador } = req.params; // Obtener el nombre del publicador desde la URL
-
     const query = `
       SELECT email
       FROM usuarios
       WHERE nombre = $1;
     `;
     const { rows } = await pool.query(query, [nombrePublicador]);
-
     if (rows.length === 0) {
       return res
         .status(404)
         .json({ message: "No se encontró el email del publicador" });
     }
-
     res.status(200).json({ email: rows[0].email });
   } catch (error) {
     console.error(error);
@@ -318,13 +316,77 @@ const buscarPublicaciones = async (req, res) => {
     }
     // sedevuelve publicaciones filtradas
     const publicaciones = rows.map((row) => ({
-      id: row.id,
+      publicacion_id: row.id,
       titulo: row.titulo,
       descripcion: row.descripcion,
       imagen_url: row.imagen_url,
       precio: row.precio,
       nombre_usuario: row.nombre,
     }));
+    res.status(200).json(publicaciones);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al obtener las publicaciones" });
+  }
+};
+
+//para ordenar publicaciones
+const ordenarPublicaciones = async (req, res) => {
+  try {
+    // Obtener el criterio de ordenación desde la consulta
+    const { sort } = req.query;
+
+    // Definir la columna y el orden por defecto
+    let orderBy = "p.titulo"; // Título por defecto
+    let orderDirection = "ASC"; // Ascendente por defecto
+
+    // Configurar las columnas y direcciones según el valor de sort
+    switch (sort) {
+      case "name-asc":
+        orderBy = "p.titulo";
+        orderDirection = "ASC";
+        break;
+      case "name-desc":
+        orderBy = "p.titulo";
+        orderDirection = "DESC";
+        break;
+      case "price-asc":
+        orderBy = "p.precio";
+        orderDirection = "ASC";
+        break;
+      case "price-desc":
+        orderBy = "p.precio";
+        orderDirection = "DESC";
+        break;
+      default:
+        break; // Mantener los valores por defecto si no se especifica sort
+    }
+
+    // Consultar las publicaciones con orden dinámico
+    const query = `
+      SELECT p.id, p.titulo, p.descripcion, p.imagen_url, p.precio, u.nombre
+      FROM publicaciones p
+      JOIN usuarios u ON p.usuario_id = u.id
+      ORDER BY ${orderBy} ${orderDirection};
+    `;
+    const { rows } = await pool.query(query);
+
+    if (rows.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No hay publicaciones disponibles" });
+    }
+
+    // Retornar las publicaciones en el formato esperado
+    const publicaciones = rows.map((row) => ({
+      publicacion_id: row.id,
+      titulo: row.titulo,
+      descripcion: row.descripcion,
+      imagen_url: row.imagen_url,
+      precio: row.precio,
+      nombre_usuario: row.nombre, // nombre del publicador
+    }));
+
     res.status(200).json(publicaciones);
   } catch (error) {
     console.error(error);
@@ -344,4 +406,5 @@ module.exports = {
   obtenerMisFavoritos,
   actualizarPerfil,
   buscarPublicaciones,
+  ordenarPublicaciones,
 };
