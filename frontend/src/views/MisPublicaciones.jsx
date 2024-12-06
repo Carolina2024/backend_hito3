@@ -47,38 +47,23 @@ const MisPublicaciones = () => {
 
   return (
     <Container
-      style={{
-        height: "calc(100vh - 140px)",
-      }}
+      fluid
+      className="py-4"
     >
       <Row>
         <Col xs={12} md={3}>
           <MenuLateral />
         </Col>
 
-        <Col xs={12} md={9}>
+        <Col xs={12} md={6} className="ms-4">
           <Container
-            style={{
-              maxHeight: "calc(100vh - 300px)", // Ajustar la altura máxima
-              overflowY: "auto", // Habilitar desplazamiento vertical
-              overflowX: "hidden", // Evitar desplazamiento horizontal
-              padding: "15px",
-            }}
           >
             <div className="text-center p-2">
               <h4 className="border-bottom p-2">Mis Publicaciones</h4>
             </div>
             <p className="text-center">{usuario?.nombre}</p>
-
             <Row
               className="justify-content-start align-item-start"
-              style={{
-                marginTop: "20px",
-                marginLeft: "auto", // Centrar horizontalmente
-                marginRight: "auto",
-                width: "75%", // Ajustar ancho de contenedor
-                height: "75%", // Altura proporcional
-              }}
             >
               {MisPublicaciones.length > 0 ? (
                 MisPublicaciones.map((pub, index) => (

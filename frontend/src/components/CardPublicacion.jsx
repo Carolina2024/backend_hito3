@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { UsuarioContext } from "../context/UsuarioContext";
 import axios from "axios";
 
-const CardPublicacion = ({ publicacion_id,
+const CardPublicacion = ({
+  publicacion_id,
   imagen,
   titulo,
   descripcion,
@@ -13,7 +14,7 @@ const CardPublicacion = ({ publicacion_id,
   publicador,
   emailUsuario,
   mostrarAgregar = true, // para mostrar o no el boton agregar (no estará en mis publicaciones)
-  esFavorito = false,
+  esFavorito =false,
 }) => {
   const navigate = useNavigate();
   const { usuario } = useContext(UsuarioContext);
@@ -34,7 +35,7 @@ const CardPublicacion = ({ publicacion_id,
   const handleAgregarFavorito = async (publicacion_id) => {
     console.log("publicacion_id: ", publicacion_id);
     // Convertir publicacion_id a número si es un string
-   /*  const publicacionIdNumerico = Number(publicacion_id);
+    /*  const publicacionIdNumerico = Number(publicacion_id);
     if (!publicacionIdNumerico) {
       alert("ID de publicación no válido.");
       return;
@@ -47,21 +48,18 @@ const CardPublicacion = ({ publicacion_id,
     }
 
     try {
-      console.log("token: " ,token)
       const response = await axios.post(
-        `http://localhost:3000/favoritos/${publicacion_id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+            `http://localhost:3000/favoritos/${publicacion_id}`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
 
-      // Cambiar el estado según la respuesta del servidor
       if (response.data.message === "Favorito agregado") {
-        setIsFavorito(true);
-      } else if (response.data.message === "Favorito eliminado") {
-        setIsFavorito(false);
+        setIsFavorito(true); //marcado favorito
       }
     } catch (error) {
       console.error("Error al actualizar el favorito:", error);
@@ -69,7 +67,7 @@ const CardPublicacion = ({ publicacion_id,
   };
 
   return (
-    <Card className="card mb-4 shadow-sm w-75 p-3 mx-auto">
+    <Card className="card mb-4 shadow-sm w-100 p-2 mx-auto">
       <Card.Img variant="top" src={imagen} />
       <Card.Body>
         <Card.Title>{titulo}</Card.Title>
@@ -80,15 +78,11 @@ const CardPublicacion = ({ publicacion_id,
         <Card.Text>
           <strong>Publicado por:</strong> {publicador}
         </Card.Text>
-        <div className="d-flex justify-content-between">
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-center">
           {mostrarAgregar && (
             <Button
               variant="dark"
-              style={{
-                backgroundColor: "#000",
-                border: "4px solid #34495e",
-                color: "#fff",
-              }}
+              className="mb-2 mb-md-0"
               onClick={handleAgregarAlCarrito}
             >
               Agregar
@@ -96,21 +90,25 @@ const CardPublicacion = ({ publicacion_id,
           )}
           <Button
             variant="secondary"
-            style={{ border: "4px solid #34495e" }}
+            className="mb-2 mb-md-0"
             onClick={handleverMas}
           >
             Ver Más
           </Button>
 
           <div
-            style={{ cursor: "pointer", fontSize: "1.5rem" }}
-            onClick={() => handleAgregarFavorito( publicacion_id )}
+            style={{
+              cursor: "pointer",
+              fontSize: "1.5rem",
+              marginTop: "-0.5rem",
+            }}
+            onClick={() => handleAgregarFavorito(publicacion_id)}
           >
             {isFavorito ? (
               <BsStarFill
                 style={{
                   fontSize: "1.5rem",
-                  color: "#f39c12",
+                  color: "#f39c12", // Estrella amarilla cuando está en favoritos
                   cursor: "pointer",
                 }}
               />

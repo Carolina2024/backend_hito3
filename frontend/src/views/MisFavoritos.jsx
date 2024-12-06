@@ -17,6 +17,7 @@ const MisFavoritos = () => {
   useEffect(() => {
     setActiveMenu("Mis Favoritos");
 
+    //para mostrar las cards favoritas
     const fetchFavoritos = async () => {
       const token = localStorage.getItem("token"); // Obtener el token dentro del efecto
       if (!token) {
@@ -25,14 +26,11 @@ const MisFavoritos = () => {
       }
 
       try {
-        const response = await axios.get(
-          "http://localhost:3000/favoritos",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const response = await axios.get("http://localhost:3000/favoritos", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
         setMisFavoritos(response.data);
       } catch (error) {
         console.error("Error fetching favorites", error);
@@ -45,40 +43,40 @@ const MisFavoritos = () => {
   }, [setActiveMenu, usuario]);
 
   return (
-    <Container
-      style={{
-        height: "calc(100vh - 140px)",
-      }}
-    >
+    <Container fluid className="py-4">
       <Row>
         <Col xs={12} md={3}>
           <MenuLateral />
         </Col>
 
-        <Col xs={12} md={9}>
-          <div className="text-center p-2">
-            <h4 className="border-bottom p-2">Mis Favoritos</h4>
-          </div>
-          <p className="text-center">{usuario?.nombre}</p>
-          <Row>
-            {misFavoritos.length > 0 ? (
-              misFavoritos.map((pub, index) => (
-                <Col xs={12} md={6} key={index}>
-                  <CardPublicacion
-                    imagen={pub.imagen_url}
-                    titulo={pub.titulo}
-                    descripcion={pub.descripcion}
-                    precio={pub.precio}
-                    publicador={pub.nombre_usuario}
-                    mostrarAgregar={true}
-                    esFavorito={true}
-                  />
-                </Col>
-              ))
-            ) : (
-              <p>No hay publicaciones favoritos disponibles</p>
-            )}
-          </Row>
+        <Col xs={12} md={6} className="ms-4">
+          <Container>
+            <div className="text-center p-2">
+              <h5 className="border-bottom p-2">Mis Favoritos</h5>
+            </div>
+            <p className="text-center">{usuario?.nombre}</p>
+
+            <Row className="justify-content-start align-item-start">
+              {misFavoritos.length > 0 ? (
+                misFavoritos.map((pub, index) => (
+                  <Col xs={12} md={6} key={pub.publicacion_id} className="mb-3">
+                    <CardPublicacion
+                      publicacion_id={pub.publicacion_id}
+                      imagen={pub.imagen_url}
+                      titulo={pub.titulo}
+                      descripcion={pub.descripcion}
+                      precio={pub.precio}
+                      publicador={pub.nombre_usuario}
+                      mostrarAgregar={true} //que se muestre boton agregar
+                      esFavorito={true} //ya está en favoritos
+                    />
+                  </Col>
+                ))
+              ) : (
+                <p>No hay publicaciones favoritos disponibles</p>
+              )}
+            </Row>
+          </Container>
         </Col>
       </Row>
     </Container>

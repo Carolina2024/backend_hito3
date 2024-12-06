@@ -1,14 +1,15 @@
 import React from "react";
 import FormularioUsuario from "../components/FormularioUsuario";
+import { Container } from "react-bootstrap";
 
 const RegistroUsuario = () => {
   return (
-    <main className="registroUsuario" style={{ height: "calc(100vh - 140px)" }}>
-      <h2>Registrarse</h2>
-      <section className="formulario">
+    <Container  style={{ height: "calc(100vh - 140px)" }}>
+      <h2 className="text-center mt-4">Registrarse</h2>
+      <section>
         <FormularioUsuario />
       </section>
-    </main>
+    </Container>
   );
 };
 

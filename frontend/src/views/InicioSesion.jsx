@@ -55,26 +55,17 @@ const InicioSesion = () => {
 
   return (
     <Container
-      className="registroUsuario"
+      className="py-4 w-50"
+      fluid
       style={{ height: "calc(100vh - 140px)" }}
     >
-      <h1 className="p-2">Iniciar Sesión</h1>
+      <h1 className="text-center text-light mb-4">Iniciar Sesión</h1>
       <Form
         onSubmit={handleSubmit}
-        style={{
-          maxWidth: "400px",
-          margin: "50px auto",
-          background: "linear-gradient(to bottom, #e6e9ef, #d4dae3)",
-          borderRadius: "10px",
-          padding: "20px",
-          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-        }}
+        className="bg-gradient p-4 rounded shadow-sm"
       >
         <Form.Group className="mb-3">
-          <Form.Label
-            htmlFor="email"
-            style={{ fontWeight: "bold", color: "#343a40" }}
-          >
+          <Form.Label htmlFor="email" className="text-light">
             Email
           </Form.Label>
           <Form.Control
@@ -83,17 +74,11 @@ const InicioSesion = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="name@example.com"
-            style={{
-              borderColor: "#a0c4ff",
-              borderRadius: "5px",
-            }}
+            className="border-primary rounded"
           />
         </Form.Group>
         <Form.Group className="mb-3">
-          <Form.Label
-            htmlFor="password"
-            style={{ fontWeight: "bold", color: "#343a40" }}
-          >
+          <Form.Label htmlFor="password" className="text-light">
             Password
           </Form.Label>
           <Form.Control
@@ -102,27 +87,24 @@ const InicioSesion = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="*******"
-            style={{
-              borderColor: "#a0c4ff",
-              borderRadius: "5px",
-            }}
+            className="border-primary rounded"
           />
         </Form.Group>
-        <Button
-          type="submit"
-          className="btn btn-primary btn-lg boton m-3"
-          style={{ background: "#00CED1" }}
-        >
-          Iniciar Sesión
-        </Button>
-        <Button
-          type="button"
-          className="btn btn-secondary btn-lg"
-          onClick={handleGoBack}
-          style={{ background: "#00BFFF" }}
-        >
-          Volver
-        </Button>
+        <Container className="d-flex flex-column align-items-center">
+          <Button
+            type="submit"
+            className="btn-lg w-50 w-sm-auto btn-primary btn-sm"
+          >
+            Iniciar Sesión
+          </Button>
+          <Button
+            type="button"
+            className="btn-lg w-50 w-sm-auto mt-3 btn-info btn-sm"
+            onClick={handleGoBack}
+          >
+            Volver
+          </Button>
+        </Container>
       </Form>
     </Container>
   );

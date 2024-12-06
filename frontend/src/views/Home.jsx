@@ -29,7 +29,6 @@ const Home = () => {
   return (
     <Container
       className="home-root container d-flex flex-column"
-      style={{ minHeight: "100vh" }}
     >
       <h3 className="text-center p-4 mt-4 fw-bold fst-italic">
         Bienvenidos al MarketPlace cursos online de programación
@@ -53,7 +52,7 @@ const Home = () => {
       </div>
 
       <Row>
-        <Col sm="6">
+        <Col sm="6" className="mb-3">
           <OrdenarPor />
         </Col>
         <Col sm="6">

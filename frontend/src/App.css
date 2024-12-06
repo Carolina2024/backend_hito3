@@ -19,51 +19,23 @@
   color: #c3f3f3;
 }
 
-.footer {
-  border-top: 2px solid #34495E;
+/* misma altura en toda la app */
+.main {
+  min-height: 100vh;
 }
 
 .card {
   background-color: #191f24 !important;
   color: #ecf0f1 !important;
   border: 1px solid #34495e !important;
-  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+  width: 100%;
 }
 
-.card:hover {
-  transform: scale(1.05);
-}
 
-.card .card-img-top {
-  border-radius: 10px;
-  transition: transform 0.3s ease;
-}
 
-button:hover {
-  transform: scale(1.05);
-}
 
-button:focus {
-  outline: none;
-}
 
-.registroUsuario {
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-  display: flex;
-  flex-direction: column;
-  padding: 2%;
-  text-align: center;
-  align-items: center;
-}
 
-.formulario {
-  text-align: end;
-  width: 50%;
-  margin-left: 30%;
-}
 
-.menu {
-  visibility: hidden;
-}
+
+

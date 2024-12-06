@@ -46,24 +46,20 @@ const Perfil = () => {
   };
 
   return (
-    <Container
-      style={{
-        height: "calc(100vh - 140px)",
-      }}
-    >
+    <Container fluid className="py-4">
       <Row>
         <Col xs={12} md={3}>
           <MenuLateral />
         </Col>
 
         <Col xs={12} md={9} className="p-4">
-          <div className="text-center border rounded shadow-sm bg-white">
+          <div className="text-center border rounded shadow-sm bg-white mt-4">
             <h2 style={{ color: "black" }}>Mi Perfil</h2>
           </div>
           <h1 className="mt-4 text-center">
             {/* muestra el nombre del usuario que ingresó al perfil desde el inicio de sesion */}
             Bienvenido <span className="fw-bold">{usuario?.nombre}</span>
-           {/*  <span className="fw-bold">{usuario?.email}</span> */}
+            {/*  <span className="fw-bold">{usuario?.email}</span> */}
           </h1>
         </Col>
       </Row>

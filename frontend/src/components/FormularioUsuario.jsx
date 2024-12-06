@@ -56,26 +56,13 @@ const FormularioUsuario = () => {
 
 
   return (
-    <Container
-      className="justify-content-center align-items-center"
-      style={{
-        paddingTop: "10px",
-      }}
-    >
-      <div className="w-75" style={{ maxWidth: "300px" }}>
+    <Container className="d-flex justify-content-center align-items-center py-4">
+      <div className="w-50">
         <Form
           onSubmit={validarDatos}
-          style={{
-            maxWidth: "600px",
-            margin: "auto",
-            background: "linear-gradient(to right, #d3d3d3, #a9a9a9, #808080)",
-            color: "#343a40",
-            padding: "30px",
-            borderRadius: "10px",
-            boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.5)",
-          }}
+          className="bg-gradient p-4 rounded shadow"
         >
-          <Form.Group as={Row} className="mb-2" controlId="formPlaintextName">
+          <Form.Group as={Row} className="mb-3" controlId="formPlaintextName">
             <Form.Label column sm="12" className="text-start">
               Nombre
             </Form.Label>
@@ -88,7 +75,7 @@ const FormularioUsuario = () => {
               />
             </Col>
           </Form.Group>
-          <Form.Group as={Row} className="mb-2" controlId="formPlaintextEmail">
+          <Form.Group as={Row} className="mb-3" controlId="formPlaintextEmail">
             <Form.Label column sm="12" className="text-start">
               Email
             </Form.Label>
@@ -101,7 +88,11 @@ const FormularioUsuario = () => {
               />
             </Col>
           </Form.Group>
-          <Form.Group as={Row} className="mb-2" controlId="formPlaintextPassword">
+          <Form.Group
+            as={Row}
+            className="mb-3"
+            controlId="formPlaintextPassword"
+          >
             <Form.Label column sm="12" className="text-start">
               Password
             </Form.Label>
@@ -114,7 +105,11 @@ const FormularioUsuario = () => {
               />
             </Col>
           </Form.Group>
-          <Form.Group as={Row} className="mb-2" controlId="formPlaintextConfirmarPassword">
+          <Form.Group
+            as={Row}
+            className="mb-3"
+            controlId="formPlaintextConfirmarPassword"
+          >
             <Form.Label column sm="12" className="text-start">
               Confirmar Password
             </Form.Label>
@@ -127,15 +122,21 @@ const FormularioUsuario = () => {
               />
             </Col>
           </Form.Group>
-          <div className="d-flex justify-content-center gap-4 pt-2">
-            <Button type="submit" className="btn btn-primary btn-lg">
+          <div className="d-flex flex-column flex-sm-row justify-content-center gap-4 pt-2">
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              className="w-100 w-sm-auto"
+            >
               Registrarme
             </Button>
             <Button
               type="button"
-              className="btn btn-secondary btn-lg"
+              variant="secondary"
+              size="lg"
               onClick={handleGoBack}
-              style={{ background: "#00BFFF" }}
+              className="w-100 w-sm-auto"
             >
               Volver
             </Button>
