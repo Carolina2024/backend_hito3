@@ -176,19 +176,16 @@ const obtenerMisPublicaciones = async (req, res) => {
   }
 };
 
-// Agregar o eliminar una publicación en los favoritos de un usuario autenticado
-const agregarEliminarFavorito = async (req, res) => {
-  /* const { publicacion_id } = req.body; */ //se ocupa cuando se escribe en body en thunder
-  let { publicacion_id } = req.params; // Recibimos el id de la publicación desde los parámetros de la URL
-  const { email } = req.user; // se extrae el email del usuario autenticado (usando req.user)
-  // Asegurar de que el publicacion_id es un número
+// Agregar una publicación en los favoritos de un usuario autenticado
+const agregarFavorito = async (req, res) => {
+  let { publicacion_id } = req.params;
+  const { email } = req.user;
   publicacion_id = parseInt(publicacion_id, 10);
+
   if (isNaN(publicacion_id)) {
     return res.status(400).json({ message: "ID de publicación no válido." });
   }
-  console.log("estoy aqui")
   try {
-    // Obtener el id del usuario a partir del email
     const userResult = await pool.query(
       "SELECT id FROM usuarios WHERE email = $1",
       [email]
@@ -196,21 +193,14 @@ const agregarEliminarFavorito = async (req, res) => {
     if (userResult.rows.length === 0) {
       return res.status(404).json({ error: "Usuario no encontrado" });
     }
-    const usuario_id = userResult.rows[0].id; // Obtener el ID del usuario
-    // Verificar si la publicación ya está en los favoritos
+    const usuario_id = userResult.rows[0].id;
     const result = await pool.query(
       "SELECT * FROM favoritos WHERE usuario_id = $1 AND publicacion_id = $2",
       [usuario_id, publicacion_id]
     );
     if (result.rows.length > 0) {
-      // Si ya está, eliminarla
-      await pool.query(
-        "DELETE FROM favoritos WHERE usuario_id = $1 AND publicacion_id = $2",
-        [usuario_id, publicacion_id]
-      );
-      return res.status(200).json({ message: "Favorito eliminado" });
+      return res.status(400).json({ message: "Ya está en favoritos" });
     }
-    // Si no está, agregarla
     await pool.query(
       "INSERT INTO favoritos (usuario_id, publicacion_id) VALUES ($1, $2)",
       [usuario_id, publicacion_id]
@@ -218,14 +208,13 @@ const agregarEliminarFavorito = async (req, res) => {
     return res.status(201).json({ message: "Favorito agregado" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Error al manejar los favoritos" });
+    res.status(500).json({ error: "Error al agregar favorito" });
   }
 };
 
 // Obtener las publicaciones favoritas de un usuario autenticado
 const obtenerMisFavoritos = async (req, res) => {
   const { email } = req.user; // Obtener el email desde req.user (usuario autenticado)
-
   try {
     // Obtener el id del usuario a partir del email
     const userResult = await pool.query(
@@ -245,7 +234,6 @@ const obtenerMisFavoritos = async (req, res) => {
        WHERE f.usuario_id = $1`,
       [usuario_id]
     );
-    
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "No tienes favoritos" });
     }
@@ -402,7 +390,7 @@ module.exports = {
   obtenerPublicaciones,
   obtenerEmailPorNombre,
   obtenerMisPublicaciones,
-  agregarEliminarFavorito,
+  agregarFavorito,
   obtenerMisFavoritos,
   actualizarPerfil,
   buscarPublicaciones,

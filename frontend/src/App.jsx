@@ -21,7 +21,7 @@ function App() {
   return (
     <UsuariosProvider>
       <NavbarMarket />
-      <div>
+      <div className="main">
         <Routes>
           {/* Ruta pública para todos */}
           <Route path="/" element={<Home />} />

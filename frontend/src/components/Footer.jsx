@@ -5,13 +5,13 @@ import { Container, Row, Col } from "react-bootstrap";
 const Footer = () => {
   return (
     <footer
-      className=".home-root footer bg-black text-white"
-      style={{ height: "70px" }}
+      className="bg-black text-white py-4"
     >
       <Container>
         <Row className="justify-content-center">
           <Col className="text-center mt-2">
-            <div className="d-flex justify-content-center">
+
+            <div className="d-flex justify-content-center mb-2">
               <a
                 href="https://www.instagram.com"
                 target="_blank"
@@ -42,6 +42,7 @@ const Footer = () => {
                 <FaYoutube style={{ fontSize: "1.2rem" }} />
               </a>
             </div>
+
             <span
               className="fs-6"
               style={{ fontFamily: '"Playfair Display", serif' }}

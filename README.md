@@ -30,4 +30,3 @@ El tercer hito consiste en el desarrollo backend del proyecto:
 6. Realizar test de por lo menos 4 rutas de la API REST comprobando los códigos de
  estados de diferentes escenarios.
 
-# backend_hito3

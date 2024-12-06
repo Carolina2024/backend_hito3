@@ -66,37 +66,27 @@ const CrearPublicacion = () => {
   };
 
   return (
-    <Container
-      style={{
-        height: "calc(100vh - 140px)",
-      }}
-    >
+    <Container fluid className="py-4">
       <Row>
         <Col xs={12} md={3}>
           <MenuLateral />
         </Col>
 
         <Col xs={12} md={9} className="d-flex justify-content-center p-4">
-          <div className="text-center shadow-sm w-50">
-            <h4 className="mb-2" style={{ color: "white" }}>
-              Crear Publicación
-            </h4>
+          <div className="text-center shadow-sm w-100 w-md-50">
+            <h4 className="mb-2 text-white border-bottom p-2">Crear Publicación</h4>
             {/* para que se muestre el usuario */}
-            <p className="text-center" style={{ color: "white" }}>
-              {usuario?.nombre}
-            </p>
+            <p className="text-center text-white">{usuario?.nombre}</p>
 
             {/* Formulario */}
             <Form
               className="bg-light rounded shadow-sm p-4"
               style={{
-                maxWidth: "300px",
-                margin: "auto",
                 background: "linear-gradient(to right, #cce7ff, #a0c4ff)",
               }}
             >
-              <Form.Group controlId="formImagen" className="mb-2">
-                <Form.Label className="fw-bold" style={{ color: "#4a4a4a" }}>
+              <Form.Group controlId="formImagen" className="mb-3">
+                <Form.Label className="fw-bold text-dark">
                   Imagen publicación
                 </Form.Label>
                 <Form.Control
@@ -106,15 +96,12 @@ const CrearPublicacion = () => {
                   onChange={(e) => setImagen_url(e.target.value)}
                   placeholder="Ingresa la URL de la imagen"
                   required
-                  style={{
-                    borderColor: "#6c757d",
-                    boxShadow: "0px 0px 8px rgba(0, 0, 0, 0.1)",
-                  }}
+                  className="border-secondary shadow-sm"
                 />
               </Form.Group>
 
-              <Form.Group controlId="formTitulo" className="mb-2">
-                <Form.Label className="fw-bold" style={{ color: "#4a4a4a" }}>
+              <Form.Group controlId="formTitulo" className="mb-3">
+                <Form.Label className="fw-bold text-dark">
                   Título publicación
                 </Form.Label>
                 <Form.Control
@@ -124,15 +111,12 @@ const CrearPublicacion = () => {
                   onChange={(e) => setTitulo(e.target.value)}
                   placeholder="Ingresa el título"
                   required
-                  style={{
-                    borderColor: "#6c757d",
-                    boxShadow: "0px 0px 8px rgba(0, 0, 0, 0.1)",
-                  }}
+                  className="border-secondary shadow-sm"
                 />
               </Form.Group>
 
-              <Form.Group controlId="formDescripcion" className="mb-2">
-                <Form.Label className="fw-bold" style={{ color: "#4a4a4a" }}>
+              <Form.Group controlId="formDescripcion" className="mb-3">
+                <Form.Label className="fw-bold text-dark">
                   Descripción publicación
                 </Form.Label>
                 <Form.Control
@@ -143,17 +127,12 @@ const CrearPublicacion = () => {
                   onChange={(e) => setDescripcion(e.target.value)}
                   placeholder="Escribe la descripción"
                   required
-                  style={{
-                    borderColor: "#6c757d",
-                    boxShadow: "0px 0px 8px rgba(0, 0, 0, 0.1)",
-                  }}
+                  className="border-secondary shadow-sm"
                 />
               </Form.Group>
 
-              <Form.Group controlId="formPrecio" className="mb-2">
-                <Form.Label className="fw-bold" style={{ color: "#4a4a4a" }}>
-                  Precio
-                </Form.Label>
+              <Form.Group controlId="formPrecio" className="mb-3">
+                <Form.Label className="fw-bold text-dark">Precio</Form.Label>
                 <Form.Control
                   type="number"
                   name="precio"
@@ -161,10 +140,7 @@ const CrearPublicacion = () => {
                   onChange={(e) => setPrecio(e.target.value)}
                   placeholder="Ingresa el precio"
                   required
-                  style={{
-                    borderColor: "#6c757d",
-                    boxShadow: "0px 0px 8px rgba(0, 0, 0, 0.1)",
-                  }}
+                  className="border-secondary shadow-sm"
                 />
               </Form.Group>
 
@@ -173,11 +149,6 @@ const CrearPublicacion = () => {
                 variant="primary"
                 type="submit"
                 className="w-50"
-                style={{
-                  backgroundColor: "#000080",
-                  borderColor: "#0056b3",
-                  transition: "background-color 0.3s ease",
-                }}
               >
                 Publicar
               </Button>
@@ -185,7 +156,6 @@ const CrearPublicacion = () => {
           </div>
         </Col>
       </Row>
-      <Row className="d-flex justify-content-end"></Row>
     </Container>
   );
 };

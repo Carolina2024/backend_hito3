@@ -57,7 +57,6 @@ function NavbarMarket() {
           zIndex: 999,
         }}
       ></Col>
-
       {/* Contenido principal */}
       <div className="flex-grow-1">
         <Navbar
@@ -66,7 +65,6 @@ function NavbarMarket() {
           expand="lg"
           fixed="top" // Navbar fijo
           className="shadow"
-          style={{ height: "70px" }}
         >
           <Container fluid>
             <Navbar.Brand>

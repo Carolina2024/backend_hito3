@@ -63,11 +63,13 @@ const UsuariosProvider = ({ children }) => {
         email,
         password,
       });
-      // se almacena el token
+      // se almacena el token si la respuesta es exitosa en el login
       const { token } = response.data;
+      console.log("Token recibido:", token);
       sessionStorage.setItem("token", token);
       setToken(token);
 
+      //peticion GET a /usuarios en Authorization Bearer
       const userResponse = await axios.get("http://localhost:3000/usuarios", {
         headers: { Authorization: `Bearer ${token}` },
       });

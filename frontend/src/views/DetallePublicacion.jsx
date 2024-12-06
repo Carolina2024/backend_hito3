@@ -38,65 +38,62 @@ const DetallePublicacion = () => {
     navigate(-1);
   };
 
+  const handleEnviar = () => {
+    alert("¡Correo enviado con éxito!");
+  };
+
   return (
-    <Container
-      style={{
-        height: "calc(100vh - 140px)",
-      }}
-    >
+    <Container fluid className="py-4">
       <Row>
-        <Col xs={12} md={3} className="menu">
+        <Col xs={12} md={3}>
           <MenuLateral />
         </Col>
-        <Col xs={12} md={9}>
+
+        <Col xs={12} md={6} className="ms-4">
           <h5 className="text-center mb-3 mt-3">Enviar Correo al Publicador</h5>
           {cargando ? (
             <p className="text-center">Cargando...</p>
           ) : (
-              <Card className="p-2 shadow-sm">
-                <Card.Body>
-                  <h5 className="mt-2">Redactar Correo</h5>
-                  <Form>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Para:</Form.Label>
-                      <Form.Control
-                        type="text"
-                        value={emailPublicador}
-                        readOnly
-                      />
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Asunto:</Form.Label>
-                      <Form.Control
-                        type="text"
-                        placeholder="Escribe el asunto"
-                        value={asunto}
-                        onChange={(e) => setAsunto(e.target.value)}
-                      />
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Mensaje:</Form.Label>
-                      <Form.Control
-                        as="textarea"
-                        rows={4}
-                        placeholder="Escribe tu mensaje"
-                        value={mensaje}
-                        onChange={(e) => setMensaje(e.target.value)}
-                      />
-                    </Form.Group>
-                    <Button variant="primary" style={{ background: "#00BFFF" }}>
-                      Enviar
-                    </Button>
-                  </Form>
-                </Card.Body>
-              </Card>
+            <Card className="p-2 shadow-sm">
+              <Card.Body>
+                <h5 className="mt-2">Redactar Correo</h5>
+                <Form>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Para:</Form.Label>
+                    <Form.Control
+                      type="text"
+                      value={emailPublicador}
+                      readOnly
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Asunto:</Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Escribe el asunto"
+                      value={asunto}
+                      onChange={(e) => setAsunto(e.target.value)}
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Mensaje:</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows={4}
+                      placeholder="Escribe tu mensaje"
+                      value={mensaje}
+                      onChange={(e) => setMensaje(e.target.value)}
+                    />
+                  </Form.Group>
+                  <Button variant="primary"
+                    onClick={handleEnviar}>
+                    Enviar
+                  </Button>
+                </Form>
+              </Card.Body>
+            </Card>
           )}
-          <Button
-            variant="secondary"
-            onClick={handleBack}
-            className="mt-4"
-            style={{ background: "#00BFFF" }}
-          >
+          <Button variant="secondary" onClick={handleBack} className="mt-4">
             Volver
           </Button>
         </Col>
