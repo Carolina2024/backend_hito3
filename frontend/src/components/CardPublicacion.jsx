@@ -19,11 +19,38 @@ const CardPublicacion = ({
   const navigate = useNavigate();
   const { usuario } = useContext(UsuarioContext);
   const [isFavorito, setIsFavorito] = useState(esFavorito);
-  console.log("publicacion_id: ", publicacion_id);
-  console.log("titulo: ", titulo);
+
   //agregar al carrito
-  const handleAgregarAlCarrito = () => {
-    navigate("/carrito");
+  const handleAgregarAlCarrito = async () => {
+    const token = localStorage.getItem("token"); // Recuperar el token del almacenamiento local
+    if (!token) {
+      // Si no hay token, mostrar un mensaje de alerta
+      alert("Debes iniciar sesión para agregar al carrito.");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `http://localhost:3000/boletas/agregar/${publicacion_id}`,
+        {}, // No es necesario enviar datos en el cuerpo
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (response.status === 201) {
+        alert("Artículo agregado al carrito.");
+        navigate("/carrito"); // Navegar al carrito si la operación fue exitosa
+      }
+    } catch (error) {
+      console.error(
+        "Error al agregar al carrito:",
+        error.response?.data || error
+      );
+      alert(
+        "Ocurrió un error al intentar agregar el artículo. Inténtalo de nuevo."
+      );
+    }
   };
 
   // Navegar a la página de detalles de la publicación usando el nombre del publicador para obtener el email de
@@ -34,12 +61,6 @@ const CardPublicacion = ({
   //para agregar favoritos
   const handleAgregarFavorito = async (publicacion_id) => {
     console.log("publicacion_id: ", publicacion_id);
-    // Convertir publicacion_id a número si es un string
-    /*  const publicacionIdNumerico = Number(publicacion_id);
-    if (!publicacionIdNumerico) {
-      alert("ID de publicación no válido.");
-      return;
-    } */
 
     const token = localStorage.getItem("token");
     if (!token) {
@@ -73,7 +94,7 @@ const CardPublicacion = ({
         <Card.Title>{titulo}</Card.Title>
         <Card.Text>{descripcion}</Card.Text>
         <Card.Text>
-          <strong>Precio:</strong> ${precio}
+          <strong>Precio:</strong> ${Math.floor(precio)}
         </Card.Text>
         <Card.Text>
           <strong>Publicado por:</strong> {publicador}

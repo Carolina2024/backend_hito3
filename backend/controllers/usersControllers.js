@@ -140,14 +140,13 @@ const obtenerEmailPorNombre = async (req, res) => {
 const obtenerMisPublicaciones = async (req, res) => {
   const { email } = req.user; // por usuario autenticado
   try {
-    // Fetch user_id based on email
     const userQuery = `SELECT id FROM usuarios WHERE email = $1`;
     const userResult = await pool.query(userQuery, [email]);
     if (userResult.rows.length === 0) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
     const usuario_id = userResult.rows[0].id;
-    // publicacione de usuario autenticado
+    // publicaciones de usuario autenticado
     const query = `
       SELECT p.id, p.titulo, p.descripcion, p.imagen_url, p.precio, u.nombre
       FROM publicaciones p
@@ -160,14 +159,13 @@ const obtenerMisPublicaciones = async (req, res) => {
         .status(404)
         .json({ message: "No hay publicaciones disponibles" });
     }
-    // Format the response to include only the relevant fields
     const publicaciones = rows.map((row) => ({
       publicacion_id: row.id,
       titulo: row.titulo,
       descripcion: row.descripcion,
       imagen_url: row.imagen_url,
       precio: row.precio,
-      nombre_usuario: row.nombre, // Only include the user's name
+      nombre_usuario: row.nombre,
     }));
     res.status(200).json(publicaciones);
   } catch (error) {
@@ -302,7 +300,7 @@ const buscarPublicaciones = async (req, res) => {
         .status(404)
         .json({ message: "No hay publicaciones disponibles" });
     }
-    // sedevuelve publicaciones filtradas
+    // se devuelve publicaciones filtradas
     const publicaciones = rows.map((row) => ({
       publicacion_id: row.id,
       titulo: row.titulo,
@@ -382,6 +380,165 @@ const ordenarPublicaciones = async (req, res) => {
   }
 };
 
+// Función para agregar al carrito desde boton agregar de la card
+const agregarItems = async (req, res) => {
+  const { publicacion_id } = req.params; // ID de la publicación a agregar
+  const { email } = req.user; // Email del usuario autenticado (desde el token)
+  try {
+    // Buscar el usuario autenticado usando su email
+    const userQuery = `SELECT id FROM usuarios WHERE email = $1`;
+    const userResult = await pool.query(userQuery, [email]);
+    if (userResult.rows.length === 0) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+    const usuario_id = userResult.rows[0].id;
+    // Buscar los datos de la publicación
+    const publicacionQuery = `SELECT titulo, precio FROM publicaciones WHERE id = $1`;
+    const publicacionResult = await pool.query(publicacionQuery, [
+      publicacion_id,
+    ]);
+    if (publicacionResult.rows.length === 0) {
+      return res.status(404).json({ message: "Publicación no encontrada" });
+    }
+    // Crear una boleta para el usuario
+    const boletaQuery = `INSERT INTO boletas (usuario_id) VALUES ($1) RETURNING *`;
+    const boletaResult = await pool.query(boletaQuery, [usuario_id]);
+    const boleta_id = boletaResult.rows[0].id;
+    // Insertar el item en la tabla items_boleta
+    const itemsBoletaQuery = `
+      INSERT INTO items_boleta (boleta_id, publicacion_id, cantidad_item)
+      VALUES ($1, $2, $3) RETURNING *;
+    `;
+    const itemsBoletaResult = await pool.query(itemsBoletaQuery, [
+      boleta_id,
+      publicacion_id,
+      1, // Cantidad inicial del item
+    ]);
+    // Responder con la información de la boleta y el item
+    res.status(201).json({
+      message: "Boleta creada y producto agregado a la boleta",
+      boleta: boletaResult.rows[0],
+      item: itemsBoletaResult.rows[0],
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al crear boleta y agregar producto" });
+  }
+};
+
+//para mostrar lo agregado al carrito
+const obtenerBoletaItems = async (req, res) => {
+  const { email } = req.user; // Obtener el email del usuario autenticado (desde el token)
+  try {
+    // Buscar el usuario autenticado usando su email
+    const userQuery = `SELECT id FROM usuarios WHERE email = $1`;
+    const userResult = await pool.query(userQuery, [email]);
+    if (userResult.rows.length === 0) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+    const usuario_id = userResult.rows[0].id;
+    // Obtener la última boleta asociada con el usuario
+    const boletaQuery = `SELECT * FROM boletas WHERE usuario_id = $1 ORDER BY id DESC LIMIT 1`;
+    const boletaResult = await pool.query(boletaQuery, [usuario_id]);
+    if (boletaResult.rows.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No se encontró boleta para el usuario" });
+    }
+    const boleta_id = boletaResult.rows[0].id;
+    // Obtener los productos dentro de la boleta
+    const itemsBoletaQuery = `
+      SELECT ib.id AS item_id, p.titulo, p.precio, ib.cantidad_item
+      FROM items_boleta ib
+      JOIN publicaciones p ON ib.publicacion_id = p.id
+      WHERE ib.boleta_id = $1
+    `;
+    const itemsBoletaResult = await pool.query(itemsBoletaQuery, [boleta_id]);
+    // Responder con la boleta y los items
+    res.status(200).json({
+      boleta: boletaResult.rows[0],
+      items: itemsBoletaResult.rows,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al obtener boleta y productos" });
+  }
+};
+
+const actualizarCantidadItem = async (req, res) => {
+  const { item_id } = req.params; // ID del item en la boleta
+  const { accion } = req.body; // Acción: "incrementar" o "disminuir"
+  try {
+    // Obtener la cantidad actual del item
+    const itemQuery = `SELECT cantidad_item FROM items_boleta WHERE id = $1`;
+    const itemResult = await pool.query(itemQuery, [item_id]);
+    if (itemResult.rows.length === 0) {
+      return res.status(404).json({ message: "Item no encontrado" });
+    }
+    let nuevaCantidad = itemResult.rows[0].cantidad_item;
+    if (accion === "incrementar") {
+      nuevaCantidad += 1;
+    } else if (accion === "disminuir" && nuevaCantidad > 1) {
+      nuevaCantidad -= 1;
+    } else {
+      return res
+        .status(400)
+        .json({ message: "Acción no válida o cantidad mínima alcanzada." });
+    }
+    // Actualizar la cantidad del item en la base de datos
+    const updateQuery = `
+      UPDATE items_boleta
+      SET cantidad_item = $1
+      WHERE id = $2
+      RETURNING *;
+    `;
+    const updateResult = await pool.query(updateQuery, [
+      nuevaCantidad,
+      item_id,
+    ]);
+    res.status(200).json({
+      message: "Cantidad actualizada",
+      item: updateResult.rows[0],
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al actualizar la cantidad del item" });
+  }
+};
+
+//para eliminar item de publicaciones agregadas al carrito
+const eliminarItem = async (req, res) => {
+  const { item_id } = req.params; // ID del ítem en la boleta
+  const { email } = req.user; // Email del usuario autenticado (desde el token)
+  try {
+    // Obtener el usuario autenticado
+    const userQuery = `SELECT id FROM usuarios WHERE email = $1`;
+    const userResult = await pool.query(userQuery, [email]);
+    if (userResult.rows.length === 0) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+    const usuario_id = userResult.rows[0].id;
+    // Verificar que el ítem pertenece al usuario autenticado
+    const boletaQuery = `
+      SELECT b.id 
+      FROM boletas b
+      JOIN items_boleta ib ON b.id = ib.boleta_id
+      WHERE ib.id = $1 AND b.usuario_id = $2
+    `;
+    const boletaResult = await pool.query(boletaQuery, [item_id, usuario_id]);
+    if (boletaResult.rows.length === 0) {
+      return res.status(403).json({ message: "Acceso no autorizado al ítem" });
+    }
+    // Eliminar el ítem de la base de datos
+    const deleteQuery = `DELETE FROM items_boleta WHERE id = $1`;
+    await pool.query(deleteQuery, [item_id]);
+    res.status(200).json({ message: "Ítem eliminado del carrito con éxito" });
+  } catch (error) {
+    console.error("Error al eliminar el ítem:", error);
+    res.status(500).json({ error: "Error al eliminar el ítem" });
+  }
+};
+
 module.exports = {
   registrarUsuario,
   verificarCredenciales,
@@ -395,4 +552,8 @@ module.exports = {
   actualizarPerfil,
   buscarPublicaciones,
   ordenarPublicaciones,
+  agregarItems,
+  obtenerBoletaItems,
+  actualizarCantidadItem,
+  eliminarItem,
 };

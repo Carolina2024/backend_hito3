@@ -1,123 +1,198 @@
-import React, { useState } from "react";
-import { Button, Container, Table } from "react-bootstrap";
-import { BsPlusCircle, BsDashCircle, BsTrash } from "react-icons/bs";
+import React, { useState, useEffect, useContext } from "react";
+import { Container, Table, Button, Alert } from "react-bootstrap";
+import { useNavigate } from "react-router-dom"; // Importar el hook useNavigate
+import { FaPlus, FaMinus, FaTrashAlt } from "react-icons/fa"; // Íconos para incrementar y decrementar
+import { UsuarioContext } from "../context/UsuarioContext";
 
 const Carrito = () => {
-  const [carrito, setCarrito] = useState([
-    {
-      id: 1,
-      titulo: "Producto 1",
-      precio: 100,
-      cantidad: 1,
-    },
-    {
-      id: 2,
-      titulo: "Producto 2",
-      precio: 50,
-      cantidad: 2,
-    },
-  ]);
+  const [boleta, setBoleta] = useState(null);
+  const [items, setItems] = useState([]);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const { usuario, setUsuario } = useContext(UsuarioContext);
 
-  const agregarItem = (id) => {
-    setCarrito((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, cantidad: item.cantidad + 1 } : item
-      )
-    );
-  };
+  useEffect(() => {
+    //para obtener la boleta con sus items
+    const fetchBoletaYItems = async () => {
+      try {
+        const token = localStorage.getItem("token");
 
-  const disminuirItem = (id) => {
-    setCarrito((prev) =>
-      prev.map((item) =>
-        item.id === id && item.cantidad > 1
-          ? { ...item, cantidad: item.cantidad - 1 }
-          : item
-      )
-    );
-  };
+        if (!token) {
+          setError("Por favor, inicia sesión para ver tu boleta.");
+          return;
+        }
 
-  const eliminarItem = (id) => {
-    setCarrito((prev) => prev.filter((item) => item.id !== id));
-  };
+        const response = await fetch(
+          "http://localhost:3000/obtenerBoletaItems",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-  const totalPagar = carrito.reduce(
-    (acc, item) => acc + item.precio * item.cantidad,
-    0
-  );
+        const data = await response.json();
 
-  const handlePagar = () => {
-    if (
-      window.confirm(
-        "¡Estás a punto de proceder con el pago! ¿Confirmas que deseas pagar?"
-      )
-    ) {
-      alert("¡Gracias por tu pago!");
+        if (response.ok) {
+          setBoleta(data.boleta);
+          setItems(data.items);
+        } else {
+          setError(data.message || "No se pudo obtener la boleta.");
+        }
+      } catch (error) {
+        console.error("Error al obtener la boleta:", error);
+        setError("Hubo un problema al obtener la boleta.");
+      }
+    };
+
+    fetchBoletaYItems();
+  }, []); // pasar una dependencia vacía para ejecutar solo una vez
+
+  //actualizar cantidad aumetar o dismimuir
+  const actualizarCantidad = async (item_id, accion) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(
+        `http://localhost:3000/actualizarCantidad/${item_id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ accion }),
+        }
+      );
+      const data = await response.json();
+      if (response.ok) {
+        setItems((prevItems) =>
+          prevItems.map((item) =>
+            item.item_id === item_id
+              ? { ...item, cantidad_item: data.item.cantidad_item }
+              : item
+          )
+        );
+      } else {
+        alert(data.message || "No se pudo actualizar la cantidad.");
+      }
+    } catch (error) {
+      console.error("Error al actualizar la cantidad:", error);
     }
   };
 
+  //elimianr item
+  const eliminarItem = async (item_id) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `http://localhost:3000/eliminarItem/${item_id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const data = await response.json();
+      if (response.ok) {
+        setItems((prevItems) =>
+          prevItems.filter((item) => item.item_id !== item_id)
+        );
+        alert("Ítem eliminado del carrito.");
+      } else {
+        alert(data.message || "No se pudo eliminar el ítem.");
+      }
+    } catch (error) {
+      console.error("Error al eliminar el ítem:", error);
+    }
+  };
+
+  if (error) {
+    return (
+      <Container className="p-4">
+        <Alert variant="danger">{error}</Alert>
+      </Container>
+    );
+  }
+
+  if (!boleta) {
+    return (
+      <Container className="p-4">
+        <h3>Cargando tu boleta...</h3>
+      </Container>
+    );
+  }
+
+  // Calcular el total de la boleta (suma de los total item)
+  const totalBoleta = items.reduce(
+    (total, item) => total + item.precio * item.cantidad_item,
+    0
+  );
+
   return (
-    <Container className="p-4" style={{ height: "calc(100vh - 140px)" }}>
-      <Container className="mt-4">
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Título</th>
-              <th>Precio</th>
-              <th>Cantidad</th>
-              <th>Total Ítem</th>
-              <th>Acciones</th>
+    <Container className="p-4">
+      <h4 className="mb-2 text-white border-bottom p-2">Ítems por Boleta</h4>
+      <p className="text-center text-white">{usuario?.nombre}</p>
+
+      <h3>Boleta #{boleta.id}</h3>
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Título</th>
+            <th>Precio</th>
+            <th>Cantidad</th>
+            <th>Total por item</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map((item, index) => (
+            <tr key={item.item_id}>
+              <td>{index + 1}</td>
+              <td>{item.titulo}</td>
+              <td>${Math.round(item.precio)}</td>
+              <td>{item.cantidad_item}</td>
+              <td>${item.precio * item.cantidad_item}</td>
+              <td>
+                <Button
+                  variant="link"
+                  onClick={() => actualizarCantidad(item.item_id, "disminuir")}
+                >
+                  <FaMinus />
+                </Button>
+                <Button
+                  variant="link"
+                  onClick={() =>
+                    actualizarCantidad(item.item_id, "incrementar")
+                  }
+                >
+                  <FaPlus />
+                </Button>
+                <Button
+                  variant="danger"
+                  onClick={() => eliminarItem(item.item_id)}
+                >
+                  <FaTrashAlt /> {/* Ícono de eliminación */}
+                </Button>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {carrito.map((item, index) => (
-              <tr key={item.id}>
-                <td>{index + 1}</td>
-                <td>{item.titulo}</td>
-                <td>{item.precio}</td>
-                <td>{item.cantidad}</td>
-                <td>{item.precio * item.cantidad}</td>
-                <td>
-                  <Button
-                    variant="outline-success"
-                    onClick={() => agregarItem(item.id)}
-                  >
-                    <BsPlusCircle />
-                  </Button>
-                  <Button
-                    variant="outline-warning"
-                    onClick={() => disminuirItem(item.id)}
-                    className="mx-2"
-                  >
-                    <BsDashCircle />
-                  </Button>
-                  <Button
-                    variant="outline-danger"
-                    onClick={() => eliminarItem(item.id)}
-                  >
-                    <BsTrash />
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-        <div className="d-flex justify-content-between">
-          <h4>Total Pagar: ${totalPagar}</h4>
-          <Button
-            variant="primary"
-            style={{ background: "#8FBC8F" }}
-            onClick={handlePagar}
-          >
+          ))}
+        </tbody>
+      </Table>
+      <div className="d-flex justify-content-between">
+        <Button variant="secondary" onClick={() => navigate(-1)}>
+          Volver
+        </Button>
+        <div>
+          <h4>Total de ítems: ${totalBoleta}</h4>{" "}
+          <Button variant="primary" onClick={() => alert("¡Pagar ahora!")}>
             Pagar
           </Button>
         </div>
-      </Container>
-      <div
-        style={{
-          marginTop: "150px",
-        }}
-      ></div>
+      </div>
     </Container>
   );
 };

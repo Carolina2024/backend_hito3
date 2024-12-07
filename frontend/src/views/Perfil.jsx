@@ -27,7 +27,7 @@ const Perfil = () => {
       return;
     }
 
-    //se ingresa al perfil despues del inicio de sesion con credenciasles y autorizacion con token para backend
+    //se ingresa al perfil despues del inicio de sesion con credenciales y autorizacion con token para backend
     try {
       //solicitud  get a usuarios, la variable data contiene el arreglo con los datos de los usuarios
       const { data } = await axios.get("http://localhost:3000/usuarios", {
@@ -59,7 +59,6 @@ const Perfil = () => {
           <h1 className="mt-4 text-center">
             {/* muestra el nombre del usuario que ingresó al perfil desde el inicio de sesion */}
             Bienvenido <span className="fw-bold">{usuario?.nombre}</span>
-            {/*  <span className="fw-bold">{usuario?.email}</span> */}
           </h1>
         </Col>
       </Row>

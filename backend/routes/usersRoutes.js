@@ -15,7 +15,10 @@ const {
   actualizarPerfil,
   buscarPublicaciones,
   ordenarPublicaciones,
-  /* obtenerDetallePublicacion, */
+  agregarItems,
+  obtenerBoletaItems,
+  actualizarCantidadItem,
+  eliminarItem,
 } = require("../controllers/usersControllers"); //para las funciones
 const { authMiddleware } = require("../middlewares/authMiddleware");
 const jwt = require("jsonwebtoken"); //para el token
@@ -71,9 +74,8 @@ router.get("/usuarios", authMiddleware, async (req, res) => {
 router.put("/usuarios", authMiddleware, async (req, res) => {
   try {
     const { nombre, email, password, nuevoPassword, confirmar } = req.body;
-    const { email: emailToken } = req.user; // Email from the session (logged-in user)
+    const { email: emailToken } = req.user;
 
-    // Validate if the user exists
     const usuario = await pool.query(
       "SELECT * FROM usuarios WHERE email = $1",
       [emailToken]
@@ -83,19 +85,16 @@ router.put("/usuarios", authMiddleware, async (req, res) => {
       return res.status(404).send("Usuario no encontrado");
     }
 
-    // Validate that the new passwords match
     if (nuevoPassword && nuevoPassword !== confirmar) {
       return res.status(400).send("Las contraseñas no coinciden");
     }
 
-    // Hash the new password if it's provided, else keep the existing password
     const hashedPassword = nuevoPassword
       ? await bcrypt.hash(nuevoPassword, 10)
       : password
       ? await bcrypt.hash(password, 10)
       : usuario.rows[0].password;
 
-    // Update user data in the database
     await pool.query(
       "UPDATE usuarios SET nombre = $1, email = $2, password = $3 WHERE email = $4",
       [nombre, email, hashedPassword, emailToken]
@@ -143,6 +142,21 @@ router.get('/publicaciones/buscar', buscarPublicaciones);
 
 //para ordenar publicaciones, es publico
 router.get("/publicaciones/ordenar", ordenarPublicaciones);
+
+// Ruta para agregar al carrito, ahora usando req.params para obtener publicacion_id
+router.post("/boletas/agregar/:publicacion_id", authMiddleware, agregarItems);
+
+//para obtener detalle de boleta con items
+router.get("/obtenerBoletaItems", authMiddleware, obtenerBoletaItems);
+
+//para aumentar o disminuir la cantidad por item
+router.put(
+  "/actualizarCantidad/:item_id",
+  authMiddleware,
+  actualizarCantidadItem
+);
+
+router.delete("/eliminarItem/:item_id", authMiddleware,eliminarItem);
 
 
 module.exports = router;
