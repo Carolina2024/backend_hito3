@@ -59,7 +59,7 @@ const InicioSesion = () => {
       fluid
       style={{ height: "calc(100vh - 140px)" }}
     >
-      <h1 className="text-center text-light mb-4">Iniciar Sesión</h1>
+      <h1 className="text-center text-light mb-4 mt-4">Iniciar Sesión</h1>
       <Form
         onSubmit={handleSubmit}
         className="bg-gradient p-4 rounded shadow-sm"

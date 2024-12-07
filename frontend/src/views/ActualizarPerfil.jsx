@@ -24,12 +24,6 @@ const ActualizarPerfil = () => {
       return;
     }
 
-    // Validar que se haya ingresado la contraseña actual
-    if (!password) {
-      alert("Debes ingresar tu contraseña actual para realizar cambios");
-      return;
-    }
-
     const token = localStorage.getItem("token"); // Obtener el token desde localStorage
     if (!token) {
       alert("Token no disponible. Por favor, inicia sesión.");
@@ -39,10 +33,15 @@ const ActualizarPerfil = () => {
     // Prepara el objeto de datos solo con los campos que tienen valores
     const updatedUserData = {
       nombre: nombre || usuario.nombre, // Mantener el nombre actual si no se cambia
-      email: email || usuario.email, // Mantener el email actual si no se cambia
-      password, // Siempre enviar la contraseña actual para validarla en el backend
-      nuevoPassword: nuevoPassword || "", // Solo enviar nuevoPassword si se cambió
     };
+
+    if (email) {
+      updatedUserData.email = email; // Solo incluir el email si se proporcionó uno nuevo
+    }
+
+    if (nuevoPassword) {
+      updatedUserData.nuevoPassword = nuevoPassword; // Solo incluir la nueva contraseña si se proporciona
+    }
 
     try {
       // Enviar la solicitud PUT para actualizar los datos del usuario
@@ -137,6 +136,19 @@ const ActualizarPerfil = () => {
                 />
               </Form.Group>
 
+              <Form.Group className="mb-3" controlId="formPlaintextPassword">
+                <Form.Label className="fw-bold text-white">
+                  Password Actual
+                </Form.Label>
+                <Form.Control
+                  type="password"
+                  placeholder="*******"
+                  onChange={handleChange(setPassword)}
+                  value={password}
+                  className="bg-light text-dark"
+                />
+              </Form.Group>
+
               <Form.Group className="mb-3" controlId="formPlaintextNewPassword">
                 <Form.Label className="fw-bold text-white">
                   Nuevo Password
@@ -166,18 +178,6 @@ const ActualizarPerfil = () => {
                 />
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId="formPlaintextPassword">
-                <Form.Label className="fw-bold text-white">
-                  Password Actual
-                </Form.Label>
-                <Form.Control
-                  type="password"
-                  placeholder="*******"
-                  onChange={handleChange(setPassword)}
-                  value={password}
-                  className="bg-light text-dark"
-                />
-              </Form.Group>
               <div className="d-flex justify-content-center gap-2">
                 <Button type="submit" className="btn btn-success">
                   Actualizar

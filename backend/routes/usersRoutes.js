@@ -22,6 +22,7 @@ const {
 } = require("../controllers/usersControllers"); //para las funciones
 const { authMiddleware } = require("../middlewares/authMiddleware");
 const jwt = require("jsonwebtoken"); //para el token
+const pool = require("../config/config");
 
 // ruta para crear usuarios
 // localhost:3000/usuarios, se agrega los datos de las 3 columnas de la tabla en body
@@ -32,7 +33,8 @@ router.post("/usuarios", async (req, res) => {
     await registrarUsuario(usuario); // registra el usuario
     res.send("Usuario registrado con éxito"); // respuesta con mensaje
   } catch (error) {
-    res.status(500).send(error); // envia un error
+    console.error("Error al registrar usuario:", error);
+    res.status(500).send("Error al registrar el usuario: " + error.message);
   }
 });
 
@@ -75,20 +77,16 @@ router.put("/usuarios", authMiddleware, async (req, res) => {
   try {
     const { nombre, email, password, nuevoPassword, confirmar } = req.body;
     const { email: emailToken } = req.user;
-
     const usuario = await pool.query(
       "SELECT * FROM usuarios WHERE email = $1",
       [emailToken]
     );
-
     if (!usuario.rows.length) {
       return res.status(404).send("Usuario no encontrado");
     }
-
     if (nuevoPassword && nuevoPassword !== confirmar) {
       return res.status(400).send("Las contraseñas no coinciden");
     }
-
     const hashedPassword = nuevoPassword
       ? await bcrypt.hash(nuevoPassword, 10)
       : password
@@ -99,7 +97,6 @@ router.put("/usuarios", authMiddleware, async (req, res) => {
       "UPDATE usuarios SET nombre = $1, email = $2, password = $3 WHERE email = $4",
       [nombre, email, hashedPassword, emailToken]
     );
-
     res.send("Perfil actualizado con éxito");
   } catch (error) {
     console.error(error);

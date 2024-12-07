@@ -245,7 +245,7 @@ const obtenerMisFavoritos = async (req, res) => {
 //para actualizar el perfil
 const actualizarPerfil = async (req, res) => {
   try {
-    const { nombre, password, nuevoPassword, confirmar } = req.body;
+    const { nombre, nuevoPassword, confirmar } = req.body;
     const { email } = req.user; // El email del usuario autenticado
     // Validar si el usuario existe
     const usuario = await pool.query(
@@ -259,20 +259,26 @@ const actualizarPerfil = async (req, res) => {
     if (nuevoPassword && nuevoPassword !== confirmar) {
       return res.status(400).send("Las contraseñas no coinciden");
     }
-    // Si no se pasa nueva contraseña, se mantiene la actual
-    const hashedPassword = nuevoPassword
-      ? await bcrypt.hash(nuevoPassword, 10)
-      : password
-      ? await bcrypt.hash(password, 10)
-      : usuario.rows[0].password;
 
     // Si no se pasa un nuevo nombre, se mantiene el actual
     const updatedName = nombre || usuario.rows[0].nombre;
 
-    // Update user data in the database
+    // Si no se pasa un nuevo email, se mantiene el email actual
+    const updatedEmail = nuevoEmail || email;
+
+    // Validar que si se pasa una nueva contraseña, se encripte correctamente
+    let hashedPassword = usuario.rows[0].password; // Usamos la contraseña actual por defecto
+    if (nuevoPassword) {
+      if (nuevoPassword === "") {
+        return res.status(400).send("La nueva contraseña no puede estar vacía");
+      }
+      hashedPassword = await bcrypt.hash(nuevoPassword, 10); // Encriptamos la nueva contraseña
+    }
+
+    //para actualizar se ingresa el email
     await pool.query(
       "UPDATE usuarios SET nombre = $1, email = $2, password = $3 WHERE email = $4",
-      [updatedName, email, hashedPassword, email]
+      [updatedName, updatedEmail, hashedPassword, email]
     );
     res.send("Perfil actualizado con éxito");
   } catch (error) {
@@ -281,6 +287,7 @@ const actualizarPerfil = async (req, res) => {
   }
 };
 
+//para el buscador de publicaciones
 const buscarPublicaciones = async (req, res) => {
   const { titulo } = req.query;
   try {
@@ -298,7 +305,7 @@ const buscarPublicaciones = async (req, res) => {
     if (rows.length === 0) {
       return res
         .status(404)
-        .json({ message: "No hay publicaciones disponibles" });
+        .json({ error: "No se encontraron publicaciones" });
     }
     // se devuelve publicaciones filtradas
     const publicaciones = rows.map((row) => ({
@@ -311,7 +318,7 @@ const buscarPublicaciones = async (req, res) => {
     }));
     res.status(200).json(publicaciones);
   } catch (error) {
-    console.error(error);
+    console.error("Error al obtener publicaciones:", error);
     res.status(500).json({ error: "Error al obtener las publicaciones" });
   }
 };
@@ -465,6 +472,7 @@ const obtenerBoletaItems = async (req, res) => {
   }
 };
 
+// para actualizar cantidad de item
 const actualizarCantidadItem = async (req, res) => {
   const { item_id } = req.params; // ID del item en la boleta
   const { accion } = req.body; // Acción: "incrementar" o "disminuir"

@@ -9,4 +9,4 @@ const pool = new Pool({
   allowExitOnIdle: true,
 });
 
-module.exports = pool;
+module.exports =  pool ;
