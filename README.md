@@ -1,5 +1,9 @@
 # Hito 3 - Desarrollo Backend de Proyecto Final
 
+## Buenas tardes profesor, para que esté informado respecto a cambios hito3:
+- Ver más de la card se seguió recomendación de profesora Abigail de que se muestre una simulación de envío de correo.
+- Las tablas de Boletas y de items_boleta se muestra su detalle en vista carrito. Por recomendación de profesor Abraham, indicó que está bien así, sin hacer cambios.
+
 ## Programado por
 
 #### **Carolina Castillo y Macarena Osses**

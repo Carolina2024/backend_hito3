@@ -16,7 +16,7 @@ import Tienda from "./components/Tienda";
 import RutaPrivada from "./components/RutaPrivada";
 import MisFavoritos from "./views/MisFavoritos";
 
-
+//PROFESOR SE DEJÓ MENSAJE EN README HITO 3
 function App() {
   return (
     <UsuariosProvider>
