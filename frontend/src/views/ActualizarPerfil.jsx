@@ -93,11 +93,6 @@ const ActualizarPerfil = () => {
   //para cambios en los inputs
   const handleChange = (setter) => (event) => setter(event.target.value);
 
-  /* if (nuevoPassword !== confirmar) {
-      alert("Los password no coinciden");
-      return;
-    } */
-
   const handleGoBack = () => {
     navigate("/perfil");
   };
