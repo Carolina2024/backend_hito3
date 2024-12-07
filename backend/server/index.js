@@ -20,8 +20,20 @@ app.use(cors(corsOptions)); // se permite cors para todas las rutas
 /* parsear el cuerpo de la consulta */
 app.use(express.json());
 
+app.use("/publicaciones", usersRoutes);
+
 app.use(usersRoutes);
 /* app.use('/publicaciones', publicacionesRouter); */ // Agregar la ruta para publicaciones
 
 /* Crea un servidor en el puerto 3000  http://localhost:3000 */
 app.listen(3000, () => console.log("SERVIDOR ENCENDIDO en el puerto 3000"));
+
+// Solo inicia el servidor si no esta corriendo en un entorno de pruebas, SE OCUPÓ PARA PROBAR TEST
+/* if (process.env.NODE_ENV !== "test") {
+  const PORT = 3001; // Define el puerto
+  app.listen(PORT, () =>
+    console.log(`SERVIDOR ENCENDIDO en el puerto ${PORT}`)
+  );
+} */
+
+module.exports = app; // Exportamos app para los test

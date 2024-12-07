@@ -50,7 +50,7 @@ const DetallePublicacion = () => {
         </Col>
 
         <Col xs={12} md={6} className="ms-4">
-          <h5 className="text-center mb-3 mt-3">Enviar Correo al Publicador</h5>
+          <h5 className="text-center mb-3 mt-4">Enviar Correo al Publicador</h5>
           {cargando ? (
             <p className="text-center">Cargando...</p>
           ) : (

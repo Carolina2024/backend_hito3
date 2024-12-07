@@ -127,7 +127,7 @@ const FormularioUsuario = () => {
               type="submit"
               variant="primary"
               size="lg"
-              className="w-100 w-sm-auto"
+              className="w-100 w-sm-auto text-center text-truncate fs-6 fs-sm-4"
             >
               Registrarme
             </Button>
@@ -136,7 +136,7 @@ const FormularioUsuario = () => {
               variant="secondary"
               size="lg"
               onClick={handleGoBack}
-              className="w-100 w-sm-auto"
+              className="w-100 w-sm-auto fs-6 fs-sm-4"
             >
               Volver
             </Button>
