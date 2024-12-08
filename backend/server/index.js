@@ -36,4 +36,4 @@ app.listen(3000, () => console.log("SERVIDOR ENCENDIDO en el puerto 3000"));
   );
 } */
 
-module.exports = app; // Exportamos app para los test
+module.exports = app; // Exportamos app para los test++++

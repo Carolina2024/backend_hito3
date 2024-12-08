@@ -54,7 +54,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// ruta para obtener usuarios
+// ruta para obtener usuarios, para ingresar al perfil
 // para obtener datos de usuario con autenticacion
 // GET localhost:3000/usuarios  con Authorization de token, se escribe en Headers con Bearer, despues se puede ingresar inicio de sesion por frontend
 // FUNCIONA BIEN EN THUNDER, ENTREGA EL NOMBRE EN MENSAJE
@@ -72,37 +72,8 @@ router.get("/usuarios", authMiddleware, async (req, res) => {
 });
 
 // ruta para actualizar perfil
-// PUT http://localhost:3000/usuarios/id  pasar el token en autorizacion y en body los 6 campos con el id
-router.put("/usuarios", authMiddleware, async (req, res) => {
-  try {
-    const { nombre, email, password, nuevoPassword, confirmar } = req.body;
-    const { email: emailToken } = req.user;
-    const usuario = await pool.query(
-      "SELECT * FROM usuarios WHERE email = $1",
-      [emailToken]
-    );
-    if (!usuario.rows.length) {
-      return res.status(404).send("Usuario no encontrado");
-    }
-    if (nuevoPassword && nuevoPassword !== confirmar) {
-      return res.status(400).send("Las contraseñas no coinciden");
-    }
-    const hashedPassword = nuevoPassword
-      ? await bcrypt.hash(nuevoPassword, 10)
-      : password
-      ? await bcrypt.hash(password, 10)
-      : usuario.rows[0].password;
-
-    await pool.query(
-      "UPDATE usuarios SET nombre = $1, email = $2, password = $3 WHERE email = $4",
-      [nombre, email, hashedPassword, emailToken]
-    );
-    res.send("Perfil actualizado con éxito");
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Error al actualizar el perfil");
-  }
-});
+// PUT http://localhost:3000/usuarios  pasar el token en autorizacion y en body lo que se cambiará con email
+router.put("/usuarios", authMiddleware, actualizarPerfil);
 
 //ruta para crear nuevas publicaciones en la opcion dentro del menu
 // http://localhost:3000/publicaciones en POST escribir en body los 4 campos
@@ -116,43 +87,37 @@ router.post("/publicaciones", authMiddleware, async (req, res) => {
   }
 });
 
-// Ruta para obtener las publicaciones, debe ser publica
+// Ruta para obtener las publicaciones, debe ser publica, GET /publicaciones
 router.get("/publicaciones", obtenerPublicaciones);
 
-// Ruta para obtener el email del publicador por su nombre
+// Ruta para obtener el email del publicador por su nombre  ejemplo GET /usuarios/email/roroo se obtiene el email, publico
 router.get('/usuarios/email/:nombrePublicador', obtenerEmailPorNombre);
 
-// Ruta para obtener las publicaciones de un usuario autenticado
+// Ruta para obtener las publicaciones de un usuario autenticado GET /publicaciones/mis-publicaciones con token
 router.get('/publicaciones/mis-publicaciones', authMiddleware, obtenerMisPublicaciones);
 
-// Ruta para agregar o eliminar un favorito
+// Ruta para agregar favorito POST /favoritos/32  con token
 router.post("/favoritos/:publicacion_id", authMiddleware, agregarFavorito);
 
-// Ruta para obtener los favoritos de un usuario
+// Ruta para obtener los favoritos de un usuario  GET /favoritos con token
 router.get('/favoritos', authMiddleware, obtenerMisFavoritos);
 
-// Ruta para actualizar el perfil de usuario
-router.put('/perfil', authMiddleware, actualizarPerfil);
-
-// Ruta para buscar publicaciones por título, es publico
+// Ruta para buscar publicaciones por título, es publico   GET ejemplo localhost:3000/publicaciones/buscar?titulo=kotlin
 router.get('/publicaciones/buscar', buscarPublicaciones);
 
-//para ordenar publicaciones, es publico
+//para ordenar publicaciones, es publico GET   localhost:3000/publicaciones/ordenar?sort=name-asc
 router.get("/publicaciones/ordenar", ordenarPublicaciones);
 
-// Ruta para agregar al carrito, ahora usando req.params para obtener publicacion_id
+// Ruta para agregar al carrito, ahora usando req.params para obtener publicacion_id   POST localhost:3000/boletas/agregar/29  con token
 router.post("/boletas/agregar/:publicacion_id", authMiddleware, agregarItems);
 
-//para obtener detalle de boleta con items
+//para obtener detalle de boleta con items GET localhost:3000/obtenerBoletaItems  con token
 router.get("/obtenerBoletaItems", authMiddleware, obtenerBoletaItems);
 
-//para aumentar o disminuir la cantidad por item
-router.put(
-  "/actualizarCantidad/:item_id",
-  authMiddleware,
-  actualizarCantidadItem
-);
+//para aumentar o disminuir la cantidad por item   PUT localhost:3000/actualizarCantidad/7 EN BODY "accion": "incrementar" O "disminuir" con token
+router.put("/actualizarCantidad/:item_id",  authMiddleware, actualizarCantidadItem );
 
+//para eliminar item DELETE  localhost:3000/eliminarItem/7 con token
 router.delete("/eliminarItem/:item_id", authMiddleware,eliminarItem);
 
 
