@@ -26,7 +26,7 @@ app.use(usersRoutes);
 /* app.use('/publicaciones', publicacionesRouter); */ // Agregar la ruta para publicaciones
 
 /* Crea un servidor en el puerto 3000  http://localhost:3000 */
-/* app.listen(3000, () => console.log("SERVIDOR ENCENDIDO en el puerto 3000")); */
+app.listen(3000, () => console.log("SERVIDOR ENCENDIDO en el puerto 3000"));
 
 // Solo inicia el servidor si no esta corriendo en un entorno de pruebas
 /* if (process.env.NODE_ENV !== "test") {
