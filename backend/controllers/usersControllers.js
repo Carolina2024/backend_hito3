@@ -16,7 +16,7 @@ const registrarUsuario = async (usuario) => {
   await pool.query(consulta, values);
 };
 
-// para verificar credenciales, se valida el email y contraseña para el backend
+// para verificar credenciales, se valida el email y contraseña para el backend, para el login
 const verificarCredenciales = async (email, password) => {
   const values = [email];
   const consulta = "SELECT * FROM usuarios WHERE email = $1";

@@ -7,7 +7,6 @@ const { Pool } = require("pg");
 const { mockQuery } = require("pg");
 
 // TEST FUNCIONA BIEN OBTENER LAS PUBLICACIONES
-// Mockear la conexión a la base de datos usando jest.mock
 describe("Operaciones CRUD de Market 1", () => {
   describe("/publicaciones ", () => {
     describe("GET /publicaciones", () => {
