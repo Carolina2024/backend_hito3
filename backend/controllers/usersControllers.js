@@ -106,7 +106,6 @@ const obtenerPublicaciones = async (req, res) => {
       precio: row.precio,
       nombre_usuario: row.nombre, // nombre del publicador
     }));
-    console.log("publicaciones: ", publicaciones);
     res.status(200).json(publicaciones);
   } catch (error) {
     console.error(error);
